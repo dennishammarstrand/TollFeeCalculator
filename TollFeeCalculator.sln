@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "TollFeeCalculator\Domain.csproj", "{B33CA3CB-E20C-4589-8D10-68F09A60E5CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{B33CA3CB-E20C-4589-8D10-68F09A60E5CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{69E119E2-D4CE-412C-97C3-6EF4AC92F15D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{69E119E2-D4CE-412C-97C3-6EF4AC92F15D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F4A55063-F2AB-4B68-B27D-A6E0D1817219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TollFeeCalculator.Tests", "TollFeeCalculator.Tests\TollFeeCalculator.Tests.csproj", "{FA1A928E-EF7E-477E-B468-D5543050F72F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TollFeeCalculator.Tests", "tests\TollFeeCalculator.Tests\TollFeeCalculator.Tests.csproj", "{FA1A928E-EF7E-477E-B468-D5543050F72F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1017105-6ACE-40D1-AB07-EF405BB231BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{B33CA3CB-E20C-4589-8D10-68F09A60E5CE} = {D1017105-6ACE-40D1-AB07-EF405BB231BD}
+		{69E119E2-D4CE-412C-97C3-6EF4AC92F15D} = {D1017105-6ACE-40D1-AB07-EF405BB231BD}
 		{FA1A928E-EF7E-477E-B468-D5543050F72F} = {F4A55063-F2AB-4B68-B27D-A6E0D1817219}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
