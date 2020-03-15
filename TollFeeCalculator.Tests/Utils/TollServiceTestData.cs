@@ -60,7 +60,15 @@ namespace TollFeeCalculator.Tests.Utils
                 new DateTime(2020,3,3,16,15,0),
                 new DateTime(2020,3,3,02,00,0)
             };
+            var dates2 = new DateTime[]
+            {
+                new DateTime(2020,3,3,06,00,0),
+                new DateTime(2020,3,3,06,31,0),
+                new DateTime(2020,3,3,07,30,0),
+                new DateTime(2020,3,3,08,15,0)
+            };
             yield return new object[] { dates, car, 44 };
+            yield return new object[] { dates2, car, 26 };
         }
 
         public IEnumerator GetEnumerator() => GetEnumerator();

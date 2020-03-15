@@ -27,29 +27,28 @@ namespace Domain.Services
             }
             Guard.DatesOfSameDay(dates);
             var orderedDates = dates.OrderBy(x => x.TimeOfDay).ToArray();
-            DateTime previousTime = orderedDates[0];
-            int totalFee = 0;
-            int lessThanAnHourRounds = 0;
-            int twoPreviousValue = 0;
-            foreach (DateTime date in orderedDates)
+            var previousTime = orderedDates.First();
+            var totalFee = 0;
+            var lessThanAnHourRounds = 0;
+            var twoPreviousFee = 0;
+            foreach (var time in orderedDates)
             {
-                int nextFee = GetTollFee(date, vehicle);
-                int previousFee = GetTollFee(previousTime, vehicle);
+                var nextFee = GetTollFee(time, vehicle);
+                var previousFee = GetTollFee(previousTime, vehicle);
 
-                if (IsTimeIntervalLessThanAnHour(date, previousTime))
+                if (IsTimeIntervalLessThanAnHour(time, previousTime))
                 {
                     lessThanAnHourRounds++;
                     if (totalFee > 0) totalFee -= previousFee;
                     totalFee += Math.Max(nextFee, previousFee);
-                    if (lessThanAnHourRounds % 2 == 0) twoPreviousValue = previousFee;
-                    if (lessThanAnHourRounds % 2 != 0) totalFee += twoPreviousValue;
+                    _ = lessThanAnHourRounds % 2 == 0 ? twoPreviousFee = previousFee : totalFee += twoPreviousFee;
                 }
                 else
                 {
                     totalFee += nextFee;
                     lessThanAnHourRounds = 0;
                 }
-                previousTime = date;
+                previousTime = time;
             }
             if (totalFee > 60) totalFee = 60;
             return totalFee;
@@ -63,8 +62,8 @@ namespace Domain.Services
             }
             if (date.IsTollFreeDate() || vehicle.GetVehicleType().IsTollFreeVehicle()) return 0;
 
-            int hour = date.Hour;
-            int minute = date.Minute;
+            var hour = date.Hour;
+            var minute = date.Minute;
 
             if (hour == 6 && minute >= 0 && minute <= 29) return 8;
             else if (hour == 6 && minute >= 30 && minute <= 59) return 13;
@@ -80,8 +79,8 @@ namespace Domain.Services
         
         private bool IsTimeIntervalLessThanAnHour(DateTime date1, DateTime date2)
         {
-            double diffInMillies = date1.TimeOfDay.TotalMilliseconds - date2.TimeOfDay.TotalMilliseconds;
-            double minutes = diffInMillies / 1000 / 60;
+            var diffInMillies = date1.TimeOfDay.TotalMilliseconds - date2.TimeOfDay.TotalMilliseconds;
+            var minutes = diffInMillies / 1000 / 60;
             return minutes <= 60;
         }
     }
