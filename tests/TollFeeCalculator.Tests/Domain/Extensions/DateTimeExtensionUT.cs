@@ -9,6 +9,7 @@ namespace TollFeeCalculator.Tests.Domain.Extensions
         [Theory]
         [InlineData("2020-03-03", false)]
         [InlineData("2020-03-01", true)]
+        [InlineData("2012-03-01", false)]
         public void ShouldValidateTollFreeDate(string dateString, bool expected)
         {
             //arrange
