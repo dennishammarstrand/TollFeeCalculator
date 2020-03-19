@@ -154,6 +154,7 @@ namespace TollFeeCalculator.Domain.Services
             {
                 //arrange
                 var timesAndFees = MockedModels.TimesAndFees;
+                _dateService.Setup(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
 
                 //act
                 var result = _tollService.CalculateTotalTollFee(timesAndFees);
