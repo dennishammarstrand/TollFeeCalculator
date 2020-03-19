@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TollFeeCalculator.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1017105-6ACE-40D1-AB07-EF405BB231BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{50481EB4-1049-4096-BA20-5153C8122FFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{FA1A928E-EF7E-477E-B468-D5543050F72F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA1A928E-EF7E-477E-B468-D5543050F72F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA1A928E-EF7E-477E-B468-D5543050F72F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50481EB4-1049-4096-BA20-5153C8122FFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50481EB4-1049-4096-BA20-5153C8122FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50481EB4-1049-4096-BA20-5153C8122FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50481EB4-1049-4096-BA20-5153C8122FFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{B33CA3CB-E20C-4589-8D10-68F09A60E5CE} = {D1017105-6ACE-40D1-AB07-EF405BB231BD}
 		{69E119E2-D4CE-412C-97C3-6EF4AC92F15D} = {D1017105-6ACE-40D1-AB07-EF405BB231BD}
 		{FA1A928E-EF7E-477E-B468-D5543050F72F} = {F4A55063-F2AB-4B68-B27D-A6E0D1817219}
+		{50481EB4-1049-4096-BA20-5153C8122FFD} = {D1017105-6ACE-40D1-AB07-EF405BB231BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1299A0BB-1E89-493A-8210-4D61DD0FF59A}

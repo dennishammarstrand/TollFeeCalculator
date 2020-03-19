@@ -1,87 +1,83 @@
-﻿using Domain.Entities;
-using Domain.Extensions;
+﻿using Domain.Extensions;
 using Domain.Interfaces;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Utils;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Domain.Services
 {
     public class TollService : ITollService
     {
-
-        /**
-         * Calculate the total toll fee for one day
-         *
-         * @param vehicle - the vehicle
-         * @param dates   - date and time of all passes on one day
-         * @return - the total toll fee for that day
-         */
+        private readonly IDateService _dateService;
+        private readonly ITollFeeRepository _tollFeeRepository;
+        public TollService(ITollFeeRepository tollFeeRepository, IDateService dateService)
+        {
+            _tollFeeRepository = tollFeeRepository;
+            _dateService = dateService;
+        }
 
         public int GetTotalTollFee(IVehicle vehicle, DateTime[] dates)
         {
-            if (Guard.IsNull(vehicle, dates))
-            {
-                throw new ArgumentNullException();
-            }
-            Guard.DatesOfSameDay(dates);
+            Guard.CheckForNull(vehicle, dates);
+            Guard.ValidateDatesOfSameDay(dates);
             var orderedDates = dates.OrderBy(x => x.TimeOfDay).ToArray();
-            var previousTime = orderedDates.First();
-            var totalFee = 0;
-            var lessThanAnHourRounds = 0;
-            var twoPreviousFee = 0;
-            foreach (var time in orderedDates)
-            {
-                var nextFee = GetTollFee(time, vehicle);
-                var previousFee = GetTollFee(previousTime, vehicle);
-
-                if (IsTimeIntervalLessThanAnHour(time, previousTime))
-                {
-                    lessThanAnHourRounds++;
-                    if (totalFee > 0) totalFee -= previousFee;
-                    totalFee += Math.Max(nextFee, previousFee);
-                    _ = lessThanAnHourRounds % 2 == 0 ? twoPreviousFee = previousFee : totalFee += twoPreviousFee;
-                }
-                else
-                {
-                    totalFee += nextFee;
-                    lessThanAnHourRounds = 0;
-                }
-                previousTime = time;
-            }
-            if (totalFee > 60) totalFee = 60;
-            return totalFee;
+            return CalculateTotalTollFee(CalculateFeeForDates(orderedDates, vehicle));
         }
 
         public int GetTollFee(DateTime date, IVehicle vehicle)
         {
-            if (Guard.IsNull(vehicle))
-            {
-                throw new ArgumentNullException();
-            }
+            Guard.CheckForNull(date, vehicle);
+            Guard.ValidateDate(date);
             if (date.IsTollFreeDate() || vehicle.GetVehicleType().IsTollFreeVehicle()) return 0;
 
-            var hour = date.Hour;
-            var minute = date.Minute;
+            return _tollFeeRepository.GetTollFee(date);
+        }
 
-            if (hour == 6 && minute >= 0 && minute <= 29) return 8;
-            else if (hour == 6 && minute >= 30 && minute <= 59) return 13;
-            else if (hour == 7 && minute >= 0 && minute <= 59) return 18;
-            else if (hour == 8 && minute >= 0 && minute <= 29) return 13;
-            else if (hour == 8 && minute >= 30 || hour > 8 && hour < 15) return 8;
-            else if (hour == 15 && minute >= 0 && minute <= 29) return 13;
-            else if (hour == 15 && minute >= 30 || hour == 16 && minute <= 59) return 18;
-            else if (hour == 17 && minute >= 0 && minute <= 59) return 13;
-            else if (hour == 18 && minute >= 0 && minute <= 29) return 8;
-            else return 0;
-        }      
-        
-        private bool IsTimeIntervalLessThanAnHour(DateTime date1, DateTime date2)
+        public List<(DateTime, int)> CalculateFeeForDates(DateTime[] dates, IVehicle vehicle)
         {
-            var diffInMillies = date1.TimeOfDay.TotalMilliseconds - date2.TimeOfDay.TotalMilliseconds;
-            var minutes = diffInMillies / 1000 / 60;
-            return minutes <= 60;
+            Guard.CheckForNull(dates, vehicle);
+            Guard.ValidateDate(dates);
+            var timeFeeValues = new List<(DateTime, int)>();
+            foreach (var time in dates)
+            {
+                var fee = GetTollFee(time, vehicle);
+                timeFeeValues.Add((time, fee));
+            }
+            return timeFeeValues;
+        }
+
+        public int CalculateTotalTollFee(List<(DateTime date, int value)> timeFeeValues)
+        {
+            Guard.CheckForNull(timeFeeValues);
+            Guard.ValidateDate(timeFeeValues.Select(s => s.date).ToArray());
+            var fee = 0;
+            for (int i = 0; i < timeFeeValues.Count; i++)
+            {
+                var intervalFee = new List<int>();
+                for (int j = i; j < timeFeeValues.Count; j++)
+                {
+                    if (_dateService.TimeIntervalLessThanAnHour(timeFeeValues[j].date, timeFeeValues[i].date))
+                    {
+                        intervalFee.Add(timeFeeValues[j].value);
+                    }
+                    else
+                    {
+                        i = j - 1;
+                        break;
+                    }
+                }
+                fee += intervalFee.Max();
+                intervalFee.Clear();
+                if (fee > 60)
+                {
+                    fee = 60;
+                    break;
+                }
+            }
+            return fee;
         }
     }
 }

@@ -8,8 +8,12 @@ namespace Domain.Utils
 {
     public static class Guard
     {
-        public static void DatesOfSameDay(DateTime[] dates)
+        public static void ValidateDatesOfSameDay(DateTime[] dates)
         {
+            if (!dates.Any())
+            {
+                throw new EmptyDateException("Please enter valid date");
+            }
             var day = dates[0].Date;
             if (!dates.All(d => d.Date == day))
             {
@@ -17,16 +21,23 @@ namespace Domain.Utils
             }
         }
 
-        public static bool IsNull(params object[] objs)
+        public static void CheckForNull(params object[] objs)
         {
             for (var i = 0; i < objs.Length; i++)
             {
                 if (objs[i] == null)
                 {
-                    return true;
+                    throw new ArgumentNullException();
                 }
             }
-            return false;
+        }
+
+        public static void ValidateDate(params DateTime[] dates)
+        {
+            if (!dates.Any())
+            {
+                throw new EmptyDateException("Please enter valid date");
+            }
         }
     }
 }

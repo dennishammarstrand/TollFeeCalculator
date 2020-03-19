@@ -1,5 +1,7 @@
-﻿using Domain.Interfaces.Services;
+﻿using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Domain.Services;
+using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Configuration
@@ -9,6 +11,8 @@ namespace Api.Configuration
         public static IServiceCollection Bootstrap(this IServiceCollection services)
         {
             services.AddScoped<ITollService, TollService>();
+            services.AddScoped<IDateService, DateService>();
+            services.AddScoped<ITollFeeRepository, TollFeeRepository>();
             return services;
         }
     }

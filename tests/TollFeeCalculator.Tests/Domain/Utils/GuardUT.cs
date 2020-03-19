@@ -18,11 +18,8 @@ namespace TollFeeCalculator.Tests.Domain.Utils
             var vehicle = MockedModels.Car;
             vehicle = null;
 
-            //act
-            var result = Guard.IsNull(vehicle);
-
-            //assert
-            Assert.True(result);
+            //act & assert
+            Assert.Throws<ArgumentNullException>(() => Guard.CheckForNull(vehicle));
         }
 
         [Fact]
@@ -32,7 +29,17 @@ namespace TollFeeCalculator.Tests.Domain.Utils
             var dates = new DateTime[] { new DateTime(2020, 03, 03), new DateTime(2020, 03, 04) };
 
             //act & assert
-            Assert.Throws<DateMissmatchException>(() => Guard.DatesOfSameDay(dates));
+            Assert.Throws<DateMissmatchException>(() => Guard.ValidateDatesOfSameDay(dates));
+        }
+
+        [Fact]
+        public void ValidateDatesOfSameDay_ShouldThrowEmptyDateException()
+        {
+            //arrange
+            var dates = new DateTime[0];
+
+            //act & assert
+            Assert.Throws<EmptyDateException>(() => Guard.ValidateDatesOfSameDay(dates));
         }
     }
 }
