@@ -113,20 +113,25 @@ namespace TollFeeCalculator.Domain.Services
                 Assert.Throws<EmptyDateException>(() => _tollService.CalculateFeeForDates(new DateTime[0], car));
             }
 
-            [Theory]
-            [ClassData(typeof(CalculateFeeForDatesTestData))]
-            public void CalculateFeeForDates_ShouldReturnListOfDatesAndFees(DateTime[] dates, IVehicle vehicle, int expectedValue)
+            [Fact]
+            public void CalculateFeeForDates_ShouldReturnListOfDatesAndFees()
             {
                 //arrange
-                _tollFeeRepository.Setup(s => s.GetTollFee(It.IsAny<DateTime>())).Returns(expectedValue);
+                var dates = MockedModels.Dates;
+                var vehicle = MockedModels.Car;
+                _tollFeeRepository.SetupSequence(s => s.GetTollFee(It.IsAny<DateTime>()))
+                    .Returns(8)
+                    .Returns(13)
+                    .Returns(18)
+                    .Returns(13);
 
                 //act
                 var result = _tollService.CalculateFeeForDates(dates, vehicle);
 
                 //assert
-                Assert.Equal(expectedValue, result[0].Item2);
-                Assert.Equal(dates[0], result[0].Item1);
-                _tollFeeRepository.Verify(s => s.GetTollFee(It.IsAny<DateTime>()), Times.Once);
+                var expected = MockedModels.ExpectedCalculationFeesForDates;
+                Assert.Equal(expected, result);
+                _tollFeeRepository.Verify(s => s.GetTollFee(It.IsAny<DateTime>()), Times.Exactly(4));
             }
         }
 
@@ -154,13 +159,21 @@ namespace TollFeeCalculator.Domain.Services
             {
                 //arrange
                 var timesAndFees = MockedModels.TimesAndFees;
-                _dateService.Setup(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
+                _dateService.SetupSequence(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                    .Returns(true)
+                    .Returns(true)
+                    .Returns(true)
+                    .Returns(false)
+                    .Returns(true)
+                    .Returns(false)
+                    .Returns(true);
 
                 //act
                 var result = _tollService.CalculateTotalTollFee(timesAndFees);
 
                 //assert
-                Assert.Equal(26, result);
+                Assert.Equal(39, result);
+                _dateService.Verify(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Exactly(7));
             }
         }
     }

@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories
         public int GetTollFee(DateTime date)
         {
             Guard.CheckForNull(date);
-            Guard.ValidateDate(date);
+            Guard.ValidateDates(date);
             var dates = new Dictionary<(DateTime start, DateTime end), int>();
             var buildDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var filePath = buildDir + @"\Database\TollValues.txt";

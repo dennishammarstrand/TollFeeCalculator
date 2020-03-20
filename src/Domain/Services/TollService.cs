@@ -30,7 +30,7 @@ namespace Domain.Services
         public int GetTollFee(DateTime date, IVehicle vehicle)
         {
             Guard.CheckForNull(date, vehicle);
-            Guard.ValidateDate(date);
+            Guard.ValidateDates(date);
             if (date.IsTollFreeDate() || vehicle.GetVehicleType().IsTollFreeVehicle()) return 0;
 
             return _tollFeeRepository.GetTollFee(date);
@@ -39,7 +39,7 @@ namespace Domain.Services
         public List<(DateTime, int)> CalculateFeeForDates(DateTime[] dates, IVehicle vehicle)
         {
             Guard.CheckForNull(dates, vehicle);
-            Guard.ValidateDate(dates);
+            Guard.ValidateDates(dates);
             var timeFeeValues = new List<(DateTime, int)>();
             foreach (var time in dates)
             {
@@ -52,7 +52,7 @@ namespace Domain.Services
         public int CalculateTotalTollFee(List<(DateTime date, int value)> timeFeeValues)
         {
             Guard.CheckForNull(timeFeeValues);
-            Guard.ValidateDate(timeFeeValues.Select(s => s.date).ToArray());
+            Guard.ValidateDates(timeFeeValues.Select(s => s.date).ToArray());
             var fee = 0;
             for (int i = 0; i < timeFeeValues.Count; i++)
             {
@@ -71,7 +71,7 @@ namespace Domain.Services
                 }
                 fee += intervalFee.Max();
                 intervalFee.Clear();
-                if (fee > 60)
+                if (fee >= 60)
                 {
                     fee = 60;
                     break;

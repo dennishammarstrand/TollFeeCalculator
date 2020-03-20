@@ -73,17 +73,4 @@ namespace TollFeeCalculator.Tests.Utils
 
         public IEnumerator GetEnumerator() => GetEnumerator();
     }
-
-    public class CalculateFeeForDatesTestData : IEnumerable<object[]>
-    {
-        IEnumerator<object[]> IEnumerable<object[]>.GetEnumerator()
-        {
-            var car = MockedModels.Car;
-            yield return new object[] { new DateTime[] { new DateTime(2020, 3, 3, 06, 00, 0) }, car, 8 };
-            yield return new object[] { new DateTime[] { new DateTime(2020, 3, 3, 06, 40, 0) }, car, 13 };
-            yield return new object[] { new DateTime[] { new DateTime(2020, 3, 3, 16, 00, 0) }, car, 18 };
-        }
-
-        public IEnumerator GetEnumerator() => GetEnumerator();
-    }
 }

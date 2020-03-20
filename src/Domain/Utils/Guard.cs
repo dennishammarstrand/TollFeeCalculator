@@ -32,7 +32,7 @@ namespace Domain.Utils
             }
         }
 
-        public static void ValidateDate(params DateTime[] dates)
+        public static void ValidateDates(params DateTime[] dates)
         {
             if (!dates.Any())
             {
