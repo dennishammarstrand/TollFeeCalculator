@@ -30,11 +30,15 @@ namespace TollFeeCalculator.Tests.Utils
 
         public static List<(DateTime, int)> TimesAndFees => new List<(DateTime, int)>
         {
-            (new DateTime(2020,3,3,06,00,0), 8),
-            (new DateTime(2020,3,3,06,30,0), 13),
-            (new DateTime(2020,3,3,06,50,0), 13),
-            (new DateTime(2020,3,3,07,30,0), 18),
-            (new DateTime(2020,3,3,9,00,0), 8)
+            (new DateTime(2020,3,3,08,30,0), 20),
+            //(new DateTime(2020,3,3,08,35,0), 40),
+            //(new DateTime(2020,3,3,08,40,0), 40),
+            //(new DateTime(2020,3,3,08,50,0), 40),
+            //(new DateTime(2020,3,3,08,56,0), 40),
+            //(new DateTime(2020,3,3,08,59,0), 40),
+            (new DateTime(2020,3,3,09,00,0), 8),
+            (new DateTime(2020,3,3,14,00,0), 8),
+            (new DateTime(2020,3,3,14,15,0), 10)
         };
     }
 }

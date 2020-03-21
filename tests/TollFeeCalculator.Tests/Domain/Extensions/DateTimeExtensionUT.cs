@@ -36,5 +36,16 @@ namespace TollFeeCalculator.Tests.Domain.Extensions
             //assert
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void TimeIntervalLessThanAnHour_ShouldValidateInterval()
+        {
+            //arrange
+            var date1 = new DateTime(2020, 3, 3, 06, 00, 00, 00);
+            var date2 = new DateTime(2020, 3, 3, 07, 30, 00, 00);
+
+            //act
+            var result = DateTimeExtension.TimeIntervalLessThanAnHour(date1, date2);
+        }
     }
 }

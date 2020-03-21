@@ -11,12 +11,10 @@ namespace Domain.Services
 {
     public class TollService : ITollService
     {
-        private readonly IDateService _dateService;
         private readonly ITollFeeRepository _tollFeeRepository;
-        public TollService(ITollFeeRepository tollFeeRepository, IDateService dateService)
+        public TollService(ITollFeeRepository tollFeeRepository)
         {
             _tollFeeRepository = tollFeeRepository;
-            _dateService = dateService;
         }
 
         public int GetTotalTollFee(IVehicle vehicle, DateTime[] dates)
@@ -51,26 +49,17 @@ namespace Domain.Services
 
         public int CalculateTotalTollFee(List<(DateTime date, int value)> timeFeeValues)
         {
+
             Guard.CheckForNull(timeFeeValues);
             Guard.ValidateDates(timeFeeValues.Select(s => s.date).ToArray());
             var fee = 0;
+            var highestFees = new List<(DateTime time, int fee)>();
             for (int i = 0; i < timeFeeValues.Count; i++)
             {
-                var intervalFee = new List<int>();
-                for (int j = i; j < timeFeeValues.Count; j++)
-                {
-                    if (_dateService.TimeIntervalLessThanAnHour(timeFeeValues[j].date, timeFeeValues[i].date))
-                    {
-                        intervalFee.Add(timeFeeValues[j].value);
-                    }
-                    else
-                    {
-                        i = j - 1;
-                        break;
-                    }
-                }
-                fee += intervalFee.Max();
-                intervalFee.Clear();
+                fee = 0;
+                highestFees.Add(GetHighestFeePreviousHour(timeFeeValues, i));
+                highestFees.Add(GetHighestFeeNextHour(timeFeeValues, i));
+                fee += GetTotalTollFee(highestFees);
                 if (fee >= 60)
                 {
                     fee = 60;
@@ -78,6 +67,55 @@ namespace Domain.Services
                 }
             }
             return fee;
+        }
+
+        public (DateTime, int) GetHighestFeePreviousHour(List<(DateTime date, int value)> timeFeeValues, int index)
+        {
+            var highestFee = new List<(DateTime date, int fee)>();
+            for (int i = index; i >= 0; i--)
+            {
+                if (DateTimeExtension.TimeIntervalLessThanAnHour(timeFeeValues[i].date, timeFeeValues[index].date))
+                {
+                    highestFee.Add(timeFeeValues[i]);
+                }
+                break;
+            }
+            return highestFee.OrderByDescending(s => s.fee).ThenBy(s => s.date).First();
+        }
+
+        public (DateTime, int) GetHighestFeeNextHour(List<(DateTime date, int value)> timeFeeValues, int index)
+        {
+            var highestFee = new List<(DateTime date, int fee)>();
+            for (int i = index; i < timeFeeValues.Count; i++)
+            {
+                if (DateTimeExtension.TimeIntervalLessThanAnHour(timeFeeValues[i].date, timeFeeValues[index].date))
+                {
+                    highestFee.Add(timeFeeValues[i]);
+                }
+                break;
+            }
+            return highestFee.OrderByDescending(s => s.fee).ThenBy(s => s.date).First();
+        }
+
+        public int GetTotalTollFee(List<(DateTime time, int fee)> timeFeeValues)
+        {
+            var highestEveryHour = new List<(DateTime time, int fee)> { timeFeeValues.First() };
+            var firstEveryHourPair = timeFeeValues.First();
+            foreach (var pair in timeFeeValues)
+            {
+                if (!DateTimeExtension.TimeIntervalLessThanAnHour(pair.time, firstEveryHourPair.time))
+                {
+                    highestEveryHour.Add(pair);
+                    firstEveryHourPair = pair;
+                }
+                if (firstEveryHourPair.fee < pair.fee)
+                {
+                    highestEveryHour.Remove(firstEveryHourPair);
+                    highestEveryHour.Add(pair);
+                    firstEveryHourPair = pair;
+                }
+            }
+            return highestEveryHour.Sum(s => s.fee);
         }
     }
 }

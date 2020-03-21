@@ -29,5 +29,12 @@ namespace Domain.Extensions
         }
 
         public static bool IsWeekend(this DateTime date) => date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+
+        public static bool TimeIntervalLessThanAnHour(DateTime firstTime, DateTime secondTime)
+        {
+            var diffInMillies = firstTime.TimeOfDay.TotalMilliseconds - secondTime.TimeOfDay.TotalMilliseconds;
+            var minutes = diffInMillies / 1000 / 60;
+            return Math.Abs(minutes) <= 60;
+        }
     }
 }

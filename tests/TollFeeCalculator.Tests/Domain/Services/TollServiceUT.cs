@@ -14,13 +14,11 @@ namespace TollFeeCalculator.Domain.Services
     public class TollServiceUT
     {
         private readonly Mock<ITollFeeRepository> _tollFeeRepository;
-        private readonly Mock<IDateService> _dateService;
         private TollService _tollService;
         public TollServiceUT()
         {
             _tollFeeRepository = new Mock<ITollFeeRepository>();
-            _dateService = new Mock<IDateService>();
-            _tollService = new TollService(_tollFeeRepository.Object, _dateService.Object);
+            _tollService = new TollService(_tollFeeRepository.Object);
         }
 
 
@@ -154,26 +152,15 @@ namespace TollFeeCalculator.Domain.Services
                 Assert.Throws<EmptyDateException>(() => _tollService.CalculateTotalTollFee(timesAndFees));
             }
 
-            [Fact]
-            public void CalculateTotalTollFee_ShouldCalculateTotalTollFee()
+            [Theory]
+            [ClassData(typeof(CalculateTotalTollFeeTestData))]
+            public void CalculateTotalTollFee_ShouldCalculateTotalTollFee(List<(DateTime, int)> timesAndFees, int expected)
             {
-                //arrange
-                var timesAndFees = MockedModels.TimesAndFees;
-                _dateService.SetupSequence(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                    .Returns(true)
-                    .Returns(true)
-                    .Returns(true)
-                    .Returns(false)
-                    .Returns(true)
-                    .Returns(false)
-                    .Returns(true);
-
                 //act
                 var result = _tollService.CalculateTotalTollFee(timesAndFees);
 
                 //assert
-                Assert.Equal(39, result);
-                _dateService.Verify(s => s.TimeIntervalLessThanAnHour(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Exactly(7));
+                Assert.Equal(expected, result);
             }
         }
     }
