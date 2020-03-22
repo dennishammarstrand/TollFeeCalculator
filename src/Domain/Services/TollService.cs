@@ -71,6 +71,7 @@ namespace Domain.Services
 
         public (DateTime, int) GetHighestFeePreviousHour(List<(DateTime date, int value)> timeFeeValues, int index)
         {
+            Guard.ValidateDates(timeFeeValues.Select(s => s.date).ToArray());
             var highestFee = new List<(DateTime date, int fee)>();
             for (int i = index; i >= 0; i--)
             {
@@ -78,13 +79,17 @@ namespace Domain.Services
                 {
                     highestFee.Add(timeFeeValues[i]);
                 }
-                break;
+                else
+                {
+                    break;
+                }
             }
             return highestFee.OrderByDescending(s => s.fee).ThenBy(s => s.date).First();
         }
 
         public (DateTime, int) GetHighestFeeNextHour(List<(DateTime date, int value)> timeFeeValues, int index)
         {
+            Guard.ValidateDates(timeFeeValues.Select(s => s.date).ToArray());
             var highestFee = new List<(DateTime date, int fee)>();
             for (int i = index; i < timeFeeValues.Count; i++)
             {
@@ -92,18 +97,22 @@ namespace Domain.Services
                 {
                     highestFee.Add(timeFeeValues[i]);
                 }
-                break;
+                else
+                {
+                    break;
+                }
             }
             return highestFee.OrderByDescending(s => s.fee).ThenBy(s => s.date).First();
         }
 
-        public int GetTotalTollFee(List<(DateTime time, int fee)> timeFeeValues)
+        public int GetTotalTollFee(List<(DateTime date, int fee)> timeFeeValues)
         {
-            var highestEveryHour = new List<(DateTime time, int fee)> { timeFeeValues.First() };
+            Guard.ValidateDates(timeFeeValues.Select(s => s.date).ToArray());
+            var highestEveryHour = new List<(DateTime date, int fee)> { timeFeeValues.First() };
             var firstEveryHourPair = timeFeeValues.First();
             foreach (var pair in timeFeeValues)
             {
-                if (!DateTimeExtension.TimeIntervalLessThanAnHour(pair.time, firstEveryHourPair.time))
+                if (!DateTimeExtension.TimeIntervalLessThanAnHour(pair.date, firstEveryHourPair.date))
                 {
                     highestEveryHour.Add(pair);
                     firstEveryHourPair = pair;

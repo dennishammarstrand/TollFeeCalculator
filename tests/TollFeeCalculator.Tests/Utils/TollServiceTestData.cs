@@ -78,6 +78,14 @@ namespace TollFeeCalculator.Tests.Utils
     {
         IEnumerator<object[]> IEnumerable<object[]>.GetEnumerator()
         {
+            var times= new List<(DateTime, int)>
+            {
+                (new DateTime(2020,3,3,08,30,0), 10),
+                (new DateTime(2020,3,3,09,00,0), 5),
+                (new DateTime(2020,3,3,10,00,0), 8),
+                (new DateTime(2020,3,3,11,00,0), 10),
+                (new DateTime(2020,3,3,14,15,0), 10)
+            };
             var timeFees = new List<(DateTime, int)>
             {
                 (new DateTime(2020,3,3,08,30,0), 20),
@@ -97,6 +105,7 @@ namespace TollFeeCalculator.Tests.Utils
                 (new DateTime(2020,3,3,14,00,0), 15),
                 (new DateTime(2020,3,3,14,15,0), 10)
             };
+            yield return new object[] { times, 30 };
             yield return new object[] { timeFees, 30 };
             yield return new object[] { timeFees2, 55 };
         }

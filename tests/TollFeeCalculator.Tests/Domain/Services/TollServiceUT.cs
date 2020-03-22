@@ -49,17 +49,6 @@ namespace TollFeeCalculator.Domain.Services
 
         public class GetTotalTollFee : TollServiceUT
         {
-            //[Theory]
-            //[ClassData(typeof(TotalTollFeeTestData))]
-            //public void ShouldCalculateTotalTollFee(DateTime[] dates, IVehicle vehicle, int expected)
-            //{
-            //    //act
-            //    var result = _tollService.GetTotalTollFee(vehicle, dates);
-
-            //    //assert
-            //    Assert.Equal(expected, result);
-            //}
-
             [Fact]
             public void ShouldThrowArgumentNullException()
             {
