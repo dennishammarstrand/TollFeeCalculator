@@ -19,7 +19,7 @@ namespace Api.Controllers
         {
             var tollFee = tollFeeQueryData.Dates.Length > 1 ? 
                           _tollService.GetTotalTollFee(tollFeeQueryData.Vehicle, tollFeeQueryData.Dates) : 
-                          _tollService.GetTollFee(tollFeeQueryData.Dates[0], tollFeeQueryData.Vehicle);
+                          _tollService.GetTollFeeForDate(tollFeeQueryData.Dates[0], tollFeeQueryData.Vehicle);
             return Ok(tollFee);
         }
     }

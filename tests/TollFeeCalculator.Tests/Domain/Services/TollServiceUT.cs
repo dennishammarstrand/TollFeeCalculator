@@ -32,7 +32,7 @@ namespace TollFeeCalculator.Domain.Services
                 _tollFeeRepository.Setup(s => s.GetTollFee(It.IsAny<DateTime>())).Returns(expectedValue);
 
                 //act
-                var result = _tollService.GetTollFee(date, vehicle);
+                var result = _tollService.GetTollFeeForDate(date, vehicle);
 
                 //assert
                 Assert.Equal(expectedValue, result);
@@ -43,7 +43,7 @@ namespace TollFeeCalculator.Domain.Services
             public void ShouldThrowArgumentNullException()
             {
                 //arrange & act & assert
-                Assert.Throws<ArgumentNullException>(() => _tollService.GetTollFee(new DateTime(2020,03,03), null));
+                Assert.Throws<ArgumentNullException>(() => _tollService.GetTollFeeForDate(new DateTime(2020,03,03), null));
             }
         }
 
