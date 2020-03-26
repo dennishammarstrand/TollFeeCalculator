@@ -22,7 +22,7 @@ namespace Domain.Services
             Guard.CheckForNull(vehicle, dates);
             Guard.ValidateDatesOfSameDay(dates);
             var orderedDates = dates.OrderBy(x => x.TimeOfDay).ToArray();
-            return CalculateTotalTollFee(CalculateFeeForDates(orderedDates, vehicle));
+            return CalculateTotalTollFee(PairDatesWithFees(orderedDates, vehicle));
         }
 
         public int GetTollFeeForDate(DateTime date, IVehicle vehicle)
@@ -34,30 +34,30 @@ namespace Domain.Services
             return _tollFeeRepository.GetTollFee(date);
         }
 
-        public List<(DateTime, int)> CalculateFeeForDates(DateTime[] dates, IVehicle vehicle)
+        public List<(DateTime, int)> PairDatesWithFees(DateTime[] dates, IVehicle vehicle)
         {
             Guard.CheckForNull(dates, vehicle);
             Guard.ValidateDates(dates);
-            var dateFeeValues = new List<(DateTime, int)>();
+            var dateFeePairs = new List<(DateTime, int)>();
             foreach (var time in dates)
             {
                 var fee = GetTollFeeForDate(time, vehicle);
-                dateFeeValues.Add((time, fee));
+                dateFeePairs.Add((time, fee));
             }
-            return dateFeeValues;
+            return dateFeePairs;
         }
 
-        public int CalculateTotalTollFee(List<(DateTime date, int value)> dateFeeValues)
+        public int CalculateTotalTollFee(List<(DateTime date, int value)> dateFeePairs)
         {
 
-            Guard.CheckForNull(dateFeeValues);
-            Guard.ValidateDates(dateFeeValues.Select(s => s.date).ToArray());
+            Guard.CheckForNull(dateFeePairs);
+            Guard.ValidateDates(dateFeePairs.Select(s => s.date).ToArray());
             var fee = 0;
-            var highestDateFees = new List<(DateTime time, int fee)>();
-            foreach (var timeFee in dateFeeValues)
+            var highestDateFees = new List<(DateTime date, int fee)>();
+            foreach (var timeFee in dateFeePairs)
             {
                 fee = 0;
-                highestDateFees.Add(GetHighestFeeForGivenDate(dateFeeValues, timeFee));
+                highestDateFees.Add(GetHighestFeeForGivenDate(dateFeePairs, timeFee));
                 fee += highestDateFees.Distinct().Sum(s => s.fee);
                 if (fee >= 60)
                 {
@@ -68,10 +68,10 @@ namespace Domain.Services
             return fee;
         }
 
-        private (DateTime date, int fee) GetHighestFeeForGivenDate(List<(DateTime date, int fee)> dateFeeValues, (DateTime date, int fee) currentDateFee)
+        private (DateTime date, int fee) GetHighestFeeForGivenDate(List<(DateTime date, int fee)> dateFeePair, (DateTime date, int fee) currentDateFeePair)
         {
-            var feesForInterval = dateFeeValues.Where(s => DateTimeExtension.TimeIntervalLessThanAnHour(s.date, currentDateFee.date)).ToList();
-            return feesForInterval.OrderByDescending(s => s.fee).ThenByDescending(s => s.date).ToList().First();
+            var dateFeesForInterval = dateFeePair.Where(s => DateTimeExtension.TimeIntervalLessThanAnHour(s.date, currentDateFeePair.date)).ToList();
+            return dateFeesForInterval.OrderByDescending(s => s.fee).ThenByDescending(s => s.date).ToList().First();
         }
     }
 }

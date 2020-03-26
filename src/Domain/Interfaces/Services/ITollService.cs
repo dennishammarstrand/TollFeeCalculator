@@ -7,7 +7,7 @@ namespace Domain.Interfaces.Services
     {
         int GetTollFeeForDate(DateTime date, IVehicle vehicle);
         int GetTotalTollFee(IVehicle vehicle, DateTime[] dates);
-        List<(DateTime, int)> CalculateFeeForDates(DateTime[] dates, IVehicle vehicle);
+        List<(DateTime, int)> PairDatesWithFees(DateTime[] dates, IVehicle vehicle);
         int CalculateTotalTollFee(List<(DateTime date, int value)> dateFeeValues);
     }
 }

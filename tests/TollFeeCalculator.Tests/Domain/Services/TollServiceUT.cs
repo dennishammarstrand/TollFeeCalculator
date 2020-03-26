@@ -81,27 +81,27 @@ namespace TollFeeCalculator.Domain.Services
             }
         }
 
-        public class CalculateFeeForDates : TollServiceUT
+        public class PairDatesWithFees : TollServiceUT
         {
             [Fact]
-            public void CalculateFeeForDates_ShouldThrowArgumentNullException()
+            public void PairDatesWithFees_ShouldThrowArgumentNullException()
             {
                 //act & assert
-                Assert.Throws<ArgumentNullException>(() => _tollService.CalculateFeeForDates(new DateTime[] { new DateTime(2020, 03, 03) }, null));
+                Assert.Throws<ArgumentNullException>(() => _tollService.PairDatesWithFees(new DateTime[] { new DateTime(2020, 03, 03) }, null));
             }
 
             [Fact]
-            public void CalculateFeeForDates_ShouldThrowEmptyDateException()
+            public void PairDatesWithFees_ShouldThrowEmptyDateException()
             {
                 //arrange
                 var car = MockedModels.Car;
 
                 //act & assert
-                Assert.Throws<EmptyDateException>(() => _tollService.CalculateFeeForDates(new DateTime[0], car));
+                Assert.Throws<EmptyDateException>(() => _tollService.PairDatesWithFees(new DateTime[0], car));
             }
 
             [Fact]
-            public void CalculateFeeForDates_ShouldReturnListOfDatesAndFees()
+            public void PairDatesWithFees_ShouldReturnListOfDatesAndFees()
             {
                 //arrange
                 var dates = MockedModels.Dates;
@@ -113,7 +113,7 @@ namespace TollFeeCalculator.Domain.Services
                     .Returns(13);
 
                 //act
-                var result = _tollService.CalculateFeeForDates(dates, vehicle);
+                var result = _tollService.PairDatesWithFees(dates, vehicle);
 
                 //assert
                 var expected = MockedModels.ExpectedCalculationFeesForDates;
